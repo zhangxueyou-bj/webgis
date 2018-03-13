@@ -10,23 +10,10 @@
     #map-container {
       height: 800px;
     }
-
-    .leaflet-popup-content-wrapper {
-      overflow: hidden;
-      padding: 0;
-    }
-
-    .poorHouseholds .leaflet-popup-content {
-      width: 490px;
-      height: 250px;
-      margin: 0;
-      line-height: 1;
-      text-align: center;
-    }
-
-    .leaflet-popup-tip-container {
-      left: 50%;
-      margin-left: -20px;
+    .my-div-icon{
+      background-color: brown;
+      width: 100px;
+      height: 100px;
     }
   </style>
 </head>
@@ -48,68 +35,6 @@
       // id: 'mapbox.1111111111111',
     }).addTo(m);
 
-
-    // 做一个maker
-    var marker = L.marker([36.52, 120.31]).addTo(m);
-    // 绑定一个popup
-    marker.bindTooltip('这是个Marker', { direction: 'left' }).openTooltip()
-    //自定义popup 
-    // var popup = L.popup({maxHeight: 250, maxWidth: 490, className: 'poorHouseholds'}).setContent('<p>Hello world!<br />This is a nice popup.</p>');
-
-    // popup.addTo(m)
-    // marker.on('click', function (e) {
-    //   console.log(e);
-    //   marker.openPopup([36.52, 120.31])
-    // })
-
-    var html = '<p>Hello world!<br />This is a nice popup.</p>'
-    var popup = marker.bindPopup(html, { maxHeight: 250, maxWidth: 490, className: 'poorHouseholds', offset: [0, 0] }).on('popupopen', function (params) {
-      // console.log(popup.isPopupOpen())
-      console.log(params)
-    });
-    // 画一个circle
-    var circle = L.circle([36.52, 120.31], {
-      color: 'green',
-      fillColor: '#f03',
-      fillOpacity: 0.5,
-      radius: 10000
-    }).addTo(m);
-    // 绑定popup
-    circle.bindPopup('我是个圆');
-
-
-    // 画一个polygon
-    var polygon = L.polygon([
-      [ // first polygon
-        [[37, -109.05], [41, -109.03], [41, -102.05], [37, -102.04]], // outer ring
-        [[37.29, -108.58], [40.71, -108.58], [40.71, -102.50], [37.29, -102.50]] // hole
-      ],
-      [ // second polygon
-        [[41, -111.03], [45, -111.04], [45, -104.05], [41, -104.05]]
-      ]
-    ], {
-        color: 'green',
-        fillColor: '#f03',
-        fillOpacity: 0.5
-      }).addTo(m);
-    // 绑定popup
-    polygon.bindPopup('this is 个多边形');
-
-    // 点击事件
-    // m.on('click', function(e) {
-    //   console.log(e);
-    //   alert('纬度：' + e.latlng.lat + '\n经度：' + e.latlng.lng);
-    // });
-
-
-    // 绑定点击事件并弹出弹窗
-    var mypop = L.popup();
-    m.on('click', function (e) {
-      mypop.setLatLng(e.latlng)
-        .setContent('你临幸了这个点：<br>' + e.latlng.toString())
-        .openOn(m);
-    });
-
     // 添加一个平移事件
     // setTimeout(function () {
     //   m.setZoom(20)
@@ -120,6 +45,20 @@
     m.on('zoomend', function (e) {
       console.log(e.target._zoom)
     })
+
+
+    //  var circle = L.circle([36.52, 120.31], {
+    //     color: 'green',
+    //     fillColor: '#f03',
+    //     fillOpacity: 0.5,
+    //     radius: 10000
+    //   }).addTo(m);
+    //   // 绑定popup
+    //   circle.bindPopup('我是个圆');
+
+ var myIcon = L.divIcon({ className: 'my-div-icon' , iconSize: [200, 300]});
+  // you can set .my-div-icon styles in CSS
+  L.marker([36.52, 120.31], { icon: myIcon }).addTo(m);
 
   </script>
 </body>
