@@ -124,7 +124,6 @@
     .mapPoorTown .populationIofo .title>span {
       font-size: 15px;
       padding-left: 5px;
-      liter-spacing: 1px;
       font-weight: 600;
     }
 
@@ -225,11 +224,11 @@
 
 
     // 绑定点击事件并弹出弹窗
-    var mypop = L.popup();
-    m.on('click', function (e) {
+   const mypop = L.popup();
+    oMap.on('click', function (e) {
       mypop.setLatLng(e.latlng)
-        .setContent('你临幸了这个点：<br>' + e.latlng.toString())
-        .openOn(m);
+        .setContent('这个坐标点为：<br>' + e.latlng.toString() + '<br />LatLng(' + e.latlng.lng.toString().slice(0, 10) + ', ' + e.latlng.lat.toString().slice(0, 9) + ')')
+        .openOn(oMap);
     });
 
     // 添加一个平移事件
