@@ -252,7 +252,7 @@ const setLayer = (layerUrls, maxZoom) => {
         layerUrls.map((item) => {
             oLayer.push(L.esri.tiledMapLayer({
                 url: item,
-                useCors: false,
+                useCors: false, 
                 maxZoom: maxZoom, // 设置最大放大图层值
             }).addTo(oMap));
         })

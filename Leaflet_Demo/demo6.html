@@ -114,21 +114,6 @@
         position: 'bottomright'
     });
 
-    oLayer.push(L.esri.tiledMapLayer({
-        url: urlTemplate.SYS_CQMap_IMG_MAPSERVER_PATH,
-        maxZoom: 17,
-        minZoom: 0,
-        useCors: false, //是否浏览器在跨域的情况下使用GET请求。
-    }).addTo(oMap));
-
-    // oLayer.push(L.esri.tiledMapLayer({
-    //     url: urlTemplate.SYS_CQMap_IMG_LABEL_MAPSERVER_PATH,
-    //     maxZoom: 17,
-    //     minZoom: 0,
-    //     useCors: false,
-    // }).addTo(oMap));
-
-
     const setLayer = (layerUrls, maxZoom) => {
         for (let i = 0; i < oLayer.length; i++) {
             oMap.removeLayer(oLayer[i])
@@ -137,11 +122,14 @@
         layerUrls.map((item) => {
             oLayer.push(L.esri.tiledMapLayer({
                 url: item,
-                useCors: false,
+                useCors: false, //是否浏览器在跨域的情况下使用GET请求。
                 maxZoom: maxZoom,
             }).addTo(oMap));
         })
     }
+
+    //加载底图
+    setLayer([urlTemplate.SYS_CQMap_IMG_MAPSERVER_PATH, urlTemplate.SYS_CQMap_IMG_LABEL_MAPSERVER_PATH], 17)
 
 
     // 获得geojson并处理数据

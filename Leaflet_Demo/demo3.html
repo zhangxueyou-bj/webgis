@@ -94,7 +94,8 @@
 <script src="./lib/Flat-UI-master/dist/js/vendor/jquery.min.js"></script>
 <script src="./lib/Flat-UI-master/dist/js/flat-ui.js"></script>
 <script src="./lib/leaflet/leaflet.js"></script>
-<script src="./lib/esri-leaflet-v2.1.2/dist/esri-leaflet.js"></script> <!-- esri-leafleat插件 -->
+<script src="./lib/esri-leaflet-v2.1.2/dist/esri-leaflet.js"></script>
+<!-- esri-leafleat插件 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
 <script src="./js/urlTemplate.js"></script>
 <script>
@@ -108,21 +109,7 @@
         attributionControl: false
     }).setView([29.59, 106.59], 12); //定位在重庆
 
-    oLayer.push(L.esri.tiledMapLayer({
-        url: urlTemplate.SYS_CQMap_IMG_MAPSERVER_PATH,
-        maxZoom: 17,
-        minZoom: 0,
-        useCors: false, //是否浏览器在跨域的情况下使用GET请求。
-    }).addTo(oMap));
-
-    // oLayer.push(L.esri.tiledMapLayer({
-    //     url: urlTemplate.SYS_CQMap_IMG_LABEL_MAPSERVER_PATH,
-    //     maxZoom: 17,
-    //     minZoom: 0,
-    //     useCors: false,
-    // }).addTo(oMap));
-
-    console.log(oLayer)
+    // 切换底图
     const setLayer = (layerUrls, maxZoom) => {
         for (let i = 0; i < oLayer.length; i++) {
             oMap.removeLayer(oLayer[i]) //将图层在地图上移除
@@ -131,11 +118,16 @@
         layerUrls.map((item) => {
             oLayer.push(L.esri.tiledMapLayer({
                 url: item,
-                useCors: false,
+                useCors: false, //是否浏览器在跨域的情况下使用GET请求。
                 maxZoom: maxZoom,
             }).addTo(oMap));
         })
     }
+
+    //加载底图
+    setLayer([urlTemplate.SYS_CQMap_IMG_MAPSERVER_PATH, urlTemplate.SYS_CQMap_IMG_LABEL_MAPSERVER_PATH], 17)
+
+    console.log(oLayer)
 </script>
 
 </html>
