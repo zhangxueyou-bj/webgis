@@ -23,7 +23,8 @@
   <script>
     var m = L.map('map-container', {
       zoomControl: false,
-      attributionControl: true
+      attributionControl: true,
+      crs: L.CRS.EPSG4326,
     }
     ).setView([36.52, 120.31], 6);
     L.tileLayer('https://api.mapbox.com/styles/v1/yqcim/cizh1ma3400ez2so5x1anhuzo/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoieXFjaW0iLCJhIjoiY2l6ZmhnZjExMDBhajJ4cGxnNGN5MnhpdCJ9.pcZtdfk8mSFboCdwqkvW6g', {
