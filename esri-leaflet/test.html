@@ -94,7 +94,7 @@
     //切换基础底图
 
     $('#test').click(function () {
-      renderGeoJson()
+      getGeoJson()
     });
     var map = L.map("mapDiv", {
       crs: L.CRS.EPSG4326,
@@ -107,10 +107,37 @@
       useCors: false,
     }).addTo(map)
 
-    function renderGeoJson() {
+    function getGeoJson (){
+      $.ajax({
+        type: "GET",
+        // url:'http://192.168.0.27:8080/tapper/geo/boundary/list/county/',
+        url:'http://47.92.150.231:8080/tapper/geo/boundary/list/town?',
+        dataType: "json",
+        data: {
+          parentId: 500101
+        },
+        success: function (response) {
+          if (response.code !== 200) {
+            layer.msg('服务器请求错误');
+            return
+          }
+          if (response.data === null) {
+            layer.msg('未查询到到该区域的数据');
+            return
+          }
+         renderGeoJson(response.data)
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+          console.log(textStatus)
+        }
+      });
+    }
+
+    function renderGeoJson(_data) {
       console.time('_testRenderGeojson');
-      for (var item_data of test_village.data) {
+      for (var item_data of _data) {
         // console.log(item_data)
+        item_data.geojson = JSON.parse(item_data.geojson)
         L.geoJSON(item_data.geojson, {
           style: function () {
             return {
@@ -126,7 +153,7 @@
           permanent: true
         }).addTo(map);
       }
-      map.fitBounds([[ 29.6478186350001,  107.989530013 ] , [30.5489101860001, 108.576033619 ]]);
+      // map.fitBounds([[ 29.6478186350001,  107.989530013 ] , [30.5489101860001, 108.576033619 ]]);
       console.timeEnd('_testRenderGeojson');
     }
   </script>
