@@ -1,0 +1,104 @@
+<html>
+
+<head>
+  <meta charset=utf-8 />
+  <title>Non-mercator projection</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+  <!-- Load Leaflet from CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+    crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+    crossorigin=""></script>
+
+
+  <!-- Load Esri Leaflet from CDN -->
+  <script src="https://unpkg.com/esri-leaflet@2.1.4/dist/esri-leaflet.js" integrity="sha512-m+BZ3OSlzGdYLqUBZt3u6eA0sH+Txdmq7cqA1u8/B2aTXviGMMLOfrKyiIW7181jbzZAY0u+3jWoiL61iLcTKQ=="
+    crossorigin=""></script>
+
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Proj4 and Proj4Leaflet -->
+  <script src="https://unpkg.com/proj4@2.4.3"></script>
+  <script src="https://unpkg.com/proj4leaflet@1.0.1"></script>
+
+  <!-- Load shapeMarkers from CDN -->
+  <script src="https://unpkg.com/leaflet-shape-markers@1.0.6"></script>
+
+  <div id="map"></div>
+
+  <script>
+    /* create new Proj4Leaflet CRS:
+    1. Proj4 and WKT definitions can be found at sites like http://epsg.io, http://spatialreference.org/ or by using gdalsrsinfo http://www.gdal.org/gdalsrsinfo.html
+    2. Appropriate values to supply to the resolution and origin constructor options can be found in the ArcGIS Server tile server REST endpoint (ex: https://tiles.arcgis.com/tiles/qHLhLQrcvEnxjtPr/arcgis/rest/services/OS_Open_Background_2/MapServer).
+    3. The numeric code within the first parameter (ex: `27700`) will be used to project the dynamic map layer on the fly
+    */
+    var crs = new L.Proj.CRS('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 +units=m +no_defs', {
+      origin: [-5781523.997920001, 4883853.592504997],
+      resolutions: [
+        132291.9312505292,
+        66145.9656252646,
+        26458.386250105836,
+        19843.789687579378,
+        13229.193125052918,
+        6614.596562526459,
+        2645.8386250105837,
+        1322.9193125052918,
+        661.4596562526459,
+        264.5838625010584,
+        132.2919312505292,
+        66.1459656252646,
+        26.458386250105836,
+        19.843789687579378,
+        13.229193125052918,
+        6.614596562526459,
+        2.6458386250105836,
+        1.3229193125052918,
+        0.6614596562526459
+      ]
+    });
+
+    var map = L.map('map', {
+      crs: crs
+    }).setView([53.386, -2.319], 7);
+
+    // The min/maxZoom values provided should match the actual cache thats been published. This information can be retrieved from the service endpoint directly.
+    L.esri.tiledMapLayer({
+      url: 'https://tiles.arcgis.com/tiles/qHLhLQrcvEnxjtPr/arcgis/rest/services/OS_Open_Background_2/MapServer',
+      maxZoom: 19,
+      minZoom: 6,
+    }).addTo(map);
+
+    feature layers will be requested in WGS84 (4326) and reprojected
+    var cities = L.esri.featureLayer({
+      url: 'https://sampleserver6.arcgisonline.com/arcgis/rest/services/WorldTimeZones/MapServer/0',
+      where: 'POP_RANK < 5',
+      pointToLayer(geojson, latlng) {
+        return L.shapeMarkers.diamondMarker(latlng, 5, {
+          color: '#0099FF',
+          weight: 2
+        })
+      }
+    }).addTo(map);
+  </script>
+
+</body>
+
+</html>
