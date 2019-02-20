@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Button from 'antd/lib/button';
 import { hot } from 'react-hot-loader';
 import AppViewer from './containers/AppViewer';
 import ToolBar from './containers/ToolBar';
