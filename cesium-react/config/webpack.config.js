@@ -139,6 +139,8 @@ module.exports = function(webpackEnv) {
       // require.resolve('webpack/hot/dev-server'),
       isEnvDevelopment &&
         require.resolve('react-dev-utils/webpackHotDevClient'),
+      isEnvDevelopment &&
+        require.resolve('react-hot-loader/patch'),
       // Finally, this is your app's code:
       paths.appIndexJs,
       // We include the app code last so that if there is a runtime error during
@@ -270,6 +272,7 @@ module.exports = function(webpackEnv) {
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
+        '@': paths.appSrc,
       },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
