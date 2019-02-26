@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Menu, Dropdown, Button, Icon } from 'antd';
 import { inject } from 'mobx-react';
+import styles from './index.module.css';
 import appViewerStore from '@/stores/modules/appViewer';
 import czmlBox from '@/data/czml/czmlBox';
 import satelliteCzml from '@/data/czml/satelliteCzml';
@@ -60,8 +61,9 @@ class ToolBar extends PureComponent {
 
   render() {
     const { setCzmlData, setGeoJsonData } = this.props.appViewer;
+    const _className = `${styles.toolbar} ${this.props.className ? this.props.className : ''} `
     return (
-      <>
+      <div className={_className}>
         <Dropdown overlay={czmlMenu}>
           <Button type="primary">
             Render czml and fly to <Icon type="down" />
@@ -81,7 +83,7 @@ class ToolBar extends PureComponent {
         >
           Render geojson and fly to
         </Button> */}
-      </>
+      </div>
     );
   }
 }

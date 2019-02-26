@@ -23,6 +23,7 @@ const td_cia_imageryProvider = {
 const geoJsonData = null;
 const czmlData = null;
 const destination = null;
+const positionData = null;
 
 class AppViewer {
   cesiumAccessToken = cesiumAccessToken;
@@ -33,6 +34,7 @@ class AppViewer {
   @observable czmlData = czmlData;
   @observable geoJsonData = geoJsonData;
   @observable destination = destination;
+  @observable positionData = positionData;
 
   @action
   setDestination = destination => (this.destination = destination);
@@ -40,6 +42,8 @@ class AppViewer {
   setCzmlData = czmlData => (this.czmlData = czmlData);
   @action
   setGeoJsonData = geoJsonData => (this.geoJsonData = geoJsonData);
+  @action
+  setPositionData = positionData => (this.positionData = positionData);
 }
 
 export default new AppViewer();

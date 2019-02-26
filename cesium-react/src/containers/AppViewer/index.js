@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { Ion, Cartesian3, CesiumTerrainProvider, IonResource, Color } from 'cesium';
-import { Viewer, Entity, PointGraphics, EntityDescription, CameraFlyTo, Cesium3DTileset } from 'resium';
+import { Viewer, CameraFlyTo, Cesium3DTileset } from 'resium';
 import appViewerStore from '@/stores/modules/appViewer';
 import ImageryLayers from './ImageryLayers';
 import GeoJson from './GeoJson';
 import Czml from './Czml';
+import EventHandler from './EventHandler';
+import Entitys from './Entitys';
 
-Ion.defaultAccessToken = appViewerStore.cesiumAccessToken
+Ion.defaultAccessToken = appViewerStore.cesiumAccessToken;
 
 @inject('appViewer')
 @observer
@@ -34,18 +36,23 @@ class AppViewer extends Component {
     }
   }
 
+  _handleEvent(e) {
+    console.log(e);
+  }
+
   render() {
-    const { geoJsonData,czmlData, destination, imageryProviders } = this.props.appViewer;
+    const { geoJsonData, czmlData, destination, imageryProviders } = this.props.appViewer;
     const terrainProvider = new CesiumTerrainProvider({
       url: IonResource.fromAssetId(3956)
     });
-    const entityPosition = Cartesian3.fromDegrees(105.0707383, 30.7117244, 100);
+
     console.log('AppViewer render');
 
     return (
       <Viewer
         full
-        animation={false}
+        animation={true}
+        shouldAnimate={true}
         baseLayerPicker={false}
         timeline={false}
         geocoder={false}
@@ -55,16 +62,11 @@ class AppViewer extends Component {
         }}
       >
         <ImageryLayers imageryProviders={imageryProviders} />
+        <EventHandler />
+        <Entitys />
         {destination ? <CameraFlyTo destination={destination} /> : null}
         <GeoJson geoJsonData={geoJsonData} />
         <Czml czmlData={czmlData} />
-        <Entity name="Sokyo" position={entityPosition}>
-          <PointGraphics pixelSize={25} color={Color.CRIMSON} outlineWidth={5} outlineColor={Color.LIGHTCORAL} />
-          <EntityDescription>
-            <h1>Hello, world.</h1>
-            <p>JSX is available here!</p>
-          </EntityDescription>
-        </Entity>
         {/* <Cesium3DTileset url={IonResource.fromAssetId(5714)} onReady={this._handleReady.bind(this)} /> */}
       </Viewer>
     );

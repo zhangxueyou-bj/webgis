@@ -100,7 +100,7 @@ module.exports = function(webpackEnv) {
               stage: 3,
             }),
           ],
-          sourceMap: isEnvProduction && shouldUseSourceMap,
+          sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
         },
       },
     ].filter(Boolean);
@@ -108,7 +108,7 @@ module.exports = function(webpackEnv) {
       loaders.push({
         loader: require.resolve(preProcessor),
         options: {
-          sourceMap: isEnvProduction && shouldUseSourceMap,
+          sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
         },
       });
     }
@@ -123,7 +123,7 @@ module.exports = function(webpackEnv) {
       ? shouldUseSourceMap
         ? 'source-map'
         : false
-      : isEnvDevelopment && 'cheap-module-source-map',
+      : isEnvDevelopment && 'eval-source-map',
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
     entry: [
@@ -139,14 +139,13 @@ module.exports = function(webpackEnv) {
       // require.resolve('webpack/hot/dev-server'),
       isEnvDevelopment &&
         require.resolve('react-dev-utils/webpackHotDevClient'),
-      isEnvDevelopment &&
-        require.resolve('react-hot-loader/patch'),
       // Finally, this is your app's code:
       paths.appIndexJs,
       // We include the app code last so that if there is a runtime error during
       // initialization, it doesn't blow up the WebpackDevServer client, and
       // changing JS code would still trigger a refresh.
     ].filter(Boolean),
+    // Add cesium
     externals: {
       cesium: "Cesium",
     },
@@ -272,6 +271,7 @@ module.exports = function(webpackEnv) {
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         'react-native': 'react-native-web',
+        // Add alias @
         '@': paths.appSrc,
       },
       plugins: [
@@ -349,8 +349,7 @@ module.exports = function(webpackEnv) {
                     {
                       loaderMap: {
                         svg: {
-                          ReactComponent:
-                            '@svgr/webpack?-prettier,-svgo![path]',
+                          ReactComponent: '@svgr/webpack?-svgo![path]',
                         },
                       },
                     },
@@ -402,7 +401,9 @@ module.exports = function(webpackEnv) {
               exclude: cssModuleRegex,
               use: getStyleLoaders({
                 importLoaders: 1,
-                sourceMap: isEnvProduction && shouldUseSourceMap,
+                sourceMap: isEnvProduction
+                  ? shouldUseSourceMap
+                  : isEnvDevelopment,
               }),
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
@@ -416,7 +417,9 @@ module.exports = function(webpackEnv) {
               test: cssModuleRegex,
               use: getStyleLoaders({
                 importLoaders: 1,
-                sourceMap: isEnvProduction && shouldUseSourceMap,
+                sourceMap: isEnvProduction
+                  ? shouldUseSourceMap
+                  : isEnvDevelopment,
                 modules: true,
                 getLocalIdent: getCSSModuleLocalIdent,
               }),
@@ -430,7 +433,9 @@ module.exports = function(webpackEnv) {
               use: getStyleLoaders(
                 {
                   importLoaders: 2,
-                  sourceMap: isEnvProduction && shouldUseSourceMap,
+                  sourceMap: isEnvProduction
+                    ? shouldUseSourceMap
+                    : isEnvDevelopment,
                 },
                 'sass-loader'
               ),
@@ -447,7 +452,9 @@ module.exports = function(webpackEnv) {
               use: getStyleLoaders(
                 {
                   importLoaders: 2,
-                  sourceMap: isEnvProduction && shouldUseSourceMap,
+                  sourceMap: isEnvProduction
+                    ? shouldUseSourceMap
+                    : isEnvDevelopment,
                   modules: true,
                   getLocalIdent: getCSSModuleLocalIdent,
                 },
@@ -601,27 +608,29 @@ module.exports = function(webpackEnv) {
           silent: true,
           formatter: typescriptFormatter,
         }),
-        new CopyWebpackPlugin([
-          {
-            from: `node_modules/cesium/Build/Cesium${isEnvProduction ? '' : 'Unminified'}`,
-            to: 'cesium'
-          }
-        ]),
-        new HtmlWebpackIncludeAssetsPlugin({
-          append: false,
-          assets: [
-            'cesium/Widgets/widgets.css',
-            'cesium/Cesium.js'
-          ]
-        }),
-        new webpack.DefinePlugin({
-          CESIUM_BASE_URL: JSON.stringify('cesium')
-        })
+      new CopyWebpackPlugin([
+        {
+          from: `node_modules/cesium/Build/Cesium${isEnvProduction ? '' : 'Unminified'}`,
+          to: 'cesium'
+        }
+      ]),
+      new HtmlWebpackIncludeAssetsPlugin({
+        append: false,
+        assets: [
+          'cesium/Widgets/widgets.css',
+          'cesium/Cesium.js'
+        ]
+      }),
+      new webpack.DefinePlugin({
+        CESIUM_BASE_URL: JSON.stringify('cesium')
+      })
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
     node: {
+      module: 'empty',
       dgram: 'empty',
+      dns: 'mock',
       fs: 'empty',
       net: 'empty',
       tls: 'empty',

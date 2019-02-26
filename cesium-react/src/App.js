@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { hot } from 'react-hot-loader';
 import AppViewer from './containers/AppViewer';
 import ToolBar from './containers/ToolBar';
+import LocationBar from './containers/LocationBar';
 import styles from './App.module.css';
 
 class App extends Component {
@@ -15,9 +16,8 @@ class App extends Component {
   render() {
     return (
       <>
-        <div className={styles.toolbar}>
-          <ToolBar />
-        </div>
+        <ToolBar className={styles.toolbar} />
+        <LocationBar className={styles.locationbar} />
         <AppViewer />
       </>
     );
